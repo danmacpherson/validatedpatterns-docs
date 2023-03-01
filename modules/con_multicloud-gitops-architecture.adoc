@@ -1,0 +1,18 @@
+:_content-type: CONCEPT
+
+[id="multicloud-gitops-architecture_{context}"]
+= Multicloud GitOps Architecture
+
+At a high level this requires a management hub, for DevOps and GitOps, and infrastructure that extends to more than one managed clusters running on private or public clouds.
+
+[![Multi-Cloud Architecture](/images/multicloud-gitops/hybrid-multicloud-management-gitops-hl-arch.png)](/images/multicloud-gitops/hybrid-multicloud-management-gitops-hl-arch.png)
+
+== Logical architecture
+
+[![Logical Architecture](/images/multicloud-gitops/logical-diagram.png)](/images/multicloud-gitops/logical-diagram.png)
+
+== Physical Architecture
+
+[![Physical Architecture](/images/multicloud-gitops/schema-gitops.png)](/images/multicloud-gitops/schema-gitops.png)
+
+For additional logical, physical and dataflow diagrams, please see the work done by the [Red Hat Portfolio Architecture team](https://gitlab.com/redhatdemocentral/portfolio-architecture-examples/-/blob/main/spi-multi-cloud-gitops.adoc)

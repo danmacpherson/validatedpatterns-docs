@@ -1,0 +1,24 @@
+:_content-type: CONCEPT
+
+[id="introducing-the-multicloud-gitops-pattern_{context}"]
+= Introducing the Multicloud GitOps pattern
+
+Organizations are aiming to develop and deploy applications on an open hybrid cloud in a stable, simple, and secure way. This hybrid strategy includes multicloud deployments where workloads might be running on different clusters and on different clouds - private or public. This strategy also requires an infrastructure-as-code approach that manages versions and deployments based on specific configurations.
+
+<!--to-doNeeds a better transition
+Do we need to call out this team? if not, remove it-->
+
+The Multicloud GitOps pattern addresses these requirements. With the Multicloud GitOps pattern, you can determine:
+
+The pattern is derived from work done by the [Red Hat Portfolio Architecture team](https://gitlab.com/redhatdemocentral/portfolio-architecture-examples/-/blob/main/spi-multi-cloud-gitops.adoc)
+
+- How to use a GitOps approach to manage multiple cloud deployments in both public and private clouds.
+- How to centrally manage multiple clusters, including workloads.
+- How to securely manage secrets across multicloud deployments.
+
+== Red Hat Technologies
+
+- Red Hat OpenShift Container Platform (Kubernetes)
+- Red Hat Advanced Cluster Management (Open Cluster Management)
+- Red Hat OpenShift GitOps (ArgoCD)
+- Hashicorp Vault

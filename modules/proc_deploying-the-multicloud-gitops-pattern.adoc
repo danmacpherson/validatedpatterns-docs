@@ -1,0 +1,42 @@
+:_content-type: PROCEDURE
+
+[id="deploying-the-multicloud-gitops-pattern_{context}"]
+= Deploying the Multicloud GitOps pattern
+
+.Procedure
+
+1. Install the installation tooling dependencies. You will need:
+
+   {% include prerequisite-tools.md %}
+
+2. Fork the [multicloud-gitops](https://github.com/hybrid-cloud-patterns/multicloud-gitops) repository on GitHub. It is recommended to fork because you can update your fork as part of the GitOps and DevOps processes.
+
+3. Clone the forked copy of this repository.
+
+    ```sh
+    git clone git@github.com:your-username/multicloud-gitops.git
+    ```
+
+4. Create a local copy of the secret values file that can safely include credentials.
+
+    **Warning:**
+    Do not commit this file. You do not want to push personal credentials to GitHub.
+    Note that if you do not want to customize the secrets, these steps are not needed.
+    The framework generates a random password for the config-demo application.
+
+    ```sh
+    cp values-secret.yaml.template ~/values-secret-multicloud-gitops.yaml
+    vi ~/values-secret-multicloud-gitops.yaml
+    ```
+
+5. Customize the deployment for your cluster.
+
+   ```sh
+   git checkout -b my-branch
+   vi values-global.yaml
+   git add values-global.yaml
+   git commit values-global.yaml
+   git push origin my-branch
+   ```
+
+6. You can deploy the pattern by running `./pattern.sh make install` or by using the [validated pattern operator](/infrastructure/using-validated-pattern-operator/). 

@@ -1,0 +1,43 @@
+---
+title: Getting Started
+weight: 10
+aliases: /multicloud-gitops/getting-started/
+---
+
+:toc:
+:toclevels: 4
+
+= Getting started with the Multicloud GitOps pattern
+
+== Prerequisites
+
+* An OpenShift cluster
+  * To create an OpenShift cluster, go to the [Red Hat Hybrid Cloud console](https://console.redhat.com/).
+  * Select **OpenShift -> Clusters -> Create cluster**.
+  * The cluster must have a dynamic `StorageClass` to provision `PersistentVolumes`. See [sizing your cluster](../../multicloud-gitops/cluster-sizing).
+* Optional: A second OpenShift cluster for multicloud demonstration.
+* The git binary and podman. For details see [Installing Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Installing Podman](https://podman.io/getting-started/installation)
+
+The use of this pattern depends on having at least one running Red Hat
+OpenShift cluster. It is desirable to have a cluster for deploying the GitOps
+management hub assets and a separate cluster(s) for the managed cluster(s).
+
+If you do not have a running Red Hat OpenShift cluster, you can start one on a
+public or private cloud by using [Red Hat's cloud
+service](https://console.redhat.com/openshift/create).
+
+include::modules/proc_deploying-the-multicloud-gitops-pattern.adoc[leveloffset=+1]
+
+include::modules/proc_deploying-the-cluster-using-the-pattern-sh-file.adoc[leveloffset=+1]
+
+= Multicloud GitOps application demos
+
+As part of this pattern, HashiCorp Vault has been installed. Refer to the section on [Vault](https://hybrid-cloud-patterns.io/secrets/vault/).
+
+<!--The Next steps heading is not inline with the chapter and only points to contibution links for help and feedback or bugs -->
+
+= Next steps
+
+* Deploying the managed cluster applications
+** After the management hub is set up and works correctly, attach one or more managed clusters to the architecture (see diagrams below).
+** For instructions on deploying the edge, refer to [Managed Cluster Sites](https://hybrid-cloud-patterns.io/multicloud-gitops/managed-cluster/).
