@@ -157,6 +157,15 @@ function pattern_url (key) {
 }
 
 function stringForKey (key) {
+  if (key == 'azr') {
+    return 'Azure'
+  }
+  if (key == 'gcp') {
+    return 'Google'
+  }
+  if (key == 'aws') {
+    return 'Amazon'
+  }
   if (key == 'aegitops') {
     return 'Ansible Edge'
   }
@@ -170,16 +179,16 @@ function stringForKey (key) {
     return 'Core GitOps'
   }
   if (key == 'medicaldiag') {
+    return 'Medical Diagnosis'
+  }
+  if (key == 'imageclass') {
     return 'Image Classification'
   }
-  if (key == 'azr') {
-    return 'Azure'
+  if (key == 'connvehicle') {
+    return 'Connected Vehicle'
   }
-  if (key == 'gcp') {
-    return 'Google'
-  }
-  if (key == 'aws') {
-    return 'Amazon'
+  if (key == 'retail') {
+    return 'Quarkus CoffeeShop'
   }
   return key
 }
@@ -335,6 +344,11 @@ function renderSingleBadge (key, field, envLabel, envLink, branchLink, badge_url
 	    var badgeClass = "ci-label-environment-prerelease";
         nightlyLabel = "(nightly build)"
 	}
+
+    if ( envLink == "internal") {
+      envLink = json_obj.jenkinsURL
+    }
+
     badgeText = '<span class="ci-label">'
     if (envLink != null) {
         badgeText += '<a href="' + envLink + '"><span class="' + badgeClass + '"><i class="ci-icon fas fa-fw fa-brands fa-git-alt" aria-hidden="true"></i>' + envLabel + ' ' + nightlyLabel + '</span></a>'
@@ -363,7 +377,7 @@ function renderBadges (badges, field, value, links) {
   badgeText = '<div class="pf-l-flex">'
   pBadges.forEach(b => {
     if ( links == "internal") {
-  	     envLink = encodeURI(b.getJenkinsURI())
+  	     envLink = "internal"
          branchLink = encodeURI(b.getJiraSearch());
     } else {
   	     envLink = encodeURI(b.getURI())
@@ -479,11 +493,11 @@ function getBadges (xmlText, bucket_url, badge_set) {
   return badges
 }
 
-function processBucketXML (text, options) {
+function processBadges (badges, options) {
   const filter_field = options.get('filter_field')
   const filter_value = options.get('filter_value')
   const links = options.get("links");
-  badges = getBadges(text, options.get('bucket'), options.get('sets'))
+
   htmlText = ""
   if (options.get("disable_buttons") != true) {
       htmlText += renderSetButtons(options.get('sets'))
@@ -528,11 +542,20 @@ function getBucketOptions (input) {
   } else {
     options.set('sets', 'GA')
   }
-  options.set('links', 'public');
+  options.set('links', 'public')
   options.set('target', 'dataset')
-  options.set('bucket', 'https://storage.googleapis.com/vp-results')
+  
+  buckets = []
+  const bucket = input['bucket']
+  if (bucket != null) {
+    buckets.push(bucket)
+  } else {
+    buckets.push('https://storage.googleapis.com/vp-results')
+    // buckets.push('https://storage.googleapis.com/other-results')
+  }
+  options.set('buckets', buckets)
 
-  const fields = [ 'sets', 'bucket', 'target', 'filter_field', 'filter_value', 'links', 'disable_buttons' ]
+  const fields = [ 'sets', 'target', 'filter_field', 'filter_value', 'links', 'disable_buttons' ]
   for (i = 0; i < fields.length; i++) {
     const key = fields[i]
     const value = input[key]
@@ -559,16 +582,51 @@ function getBucketOptions (input) {
   return options
 }
 
+function fetchBucketBadges(bucket, inputs) {
+  return new Promise((resolve, reject) => {
+    let req = new XMLHttpRequest();
+    const options = getBucketOptions(inputs);
+    req.open('GET', bucket);
+    req.onload = function () {
+      if (req.status == 200) {
+        const badges = getBadges(req.responseText, bucket, options.get('sets'))
+        resolve(badges);
+      } else {
+        console.error('Error: ' + req.status);
+        reject('Error: ' + req.status);
+      }
+    };
+    req.send();
+  });
+}
+
 function obtainBadges (inputs) {
-  let req = new XMLHttpRequest()
-  const options = getBucketOptions(inputs)
-  req.open('GET', options.get('bucket'))
-  req.onload = function () {
-    if (req.status == 200) {
-	    processBucketXML(req.responseText, options)
-    } else {
-	    console.log('Error: ' + req.status)
-    }
+  const options = getBucketOptions(inputs);
+  const buckets = options.get('buckets')
+  
+  // Create an array to store promises for each bucket's badges
+  const badgePromises = [];
+
+  // Iterate through each bucket URL and fetch badges asynchronously
+  for (const bucket of buckets) {
+    badgePromises.push(fetchBucketBadges(bucket, inputs));
   }
-  req.send()
+
+  // Wait for all promises to resolve
+  Promise.all(badgePromises)
+    .then((results) => {
+      // Process the badges from all buckets
+      const allBadges = [];
+      for (const badges of results) {
+        console.log("Got "+badges.length+" badges")
+        allBadges.push(...badges);
+      }
+
+      console.log('All badges:', allBadges);
+
+      processBadges(allBadges, options)
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
 }
